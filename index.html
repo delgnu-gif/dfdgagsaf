@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎯 기발한 교실 자리 뽑기 | Creative Class Seat Picker</title>
+  <meta name="description" content="다양한 애니메이션 효과와 게임 요소를 도입하여 자리 바꾸는 시간 자체를 하나의 학급 이벤트로 만들어주는 창의적인 자리 배치 웹앱">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <!-- Dynamic BG Sparkles -->
+  <div class="bg-glow"></div>
+
+  <!-- App Wrapper -->
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="main-header no-print">
+      <div class="header-logo">
+        <span class="logo-emoji">🎯</span>
+        <h1>기발한 교실 자리 뽑기</h1>
+      </div>
+      <div class="header-controls">
+        <button id="btn-sound-toggle" class="btn-icon" title="효과음 켜기/끄기">
+          <i data-lucide="volume-2"></i>
+        </button>
+        <button id="btn-theme-toggle" class="btn-icon" title="테마 변경 (다크 / 프로젝터 고대비)">
+          <i data-lucide="sun"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN VIEWS -->
+    <main class="main-content">
+      
+      <!-- 1. SETUP VIEW -->
+      <section id="view-setup" class="view-panel active no-print">
+        <div class="grid-two-cols">
+          
+          <!-- LEFT COLUMN: Students & Constraints -->
+          <div class="card setup-card">
+            <h2 class="card-title"><i data-lucide="users"></i> 1. 학생 명단 설정</h2>
+            
+            <div class="form-group">
+              <label for="input-students">학생 이름 입력 (줄바꿈 또는 쉼표로 구분)</label>
+              <textarea id="input-students" placeholder="홍길동&#10;김철수&#10;이영희..."></textarea>
+              <div class="textarea-actions">
+                <button id="btn-clear-students" class="btn-secondary btn-sm"><i data-lucide="trash-2"></i> 전체 삭제</button>
+                <button id="btn-sample-students" class="btn-secondary btn-sm"><i data-lucide="sparkles"></i> 샘플 생성</button>
+                <button id="btn-upload-file" class="btn-secondary btn-sm"><i data-lucide="file-up"></i> 파일 불러오기</button>
+                <input type="file" id="input-file-students" accept=".txt,.csv" style="display: none;">
+                <span class="student-counter">등록된 학생: <strong id="student-count">0</strong>명</span>
+              </div>
+
+            </div>
+
+            <hr class="card-divider">
+
+            <h3 class="sub-title"><i data-lucide="shield-alert"></i> 제약 조건 관리 (옵션)</h3>
+            
+            <!-- Constraint: Front Row -->
+            <div class="constraint-section">
+              <div class="constraint-header">
+                <span>👁️ 앞자리 고정 (시력 제한 등)</span>
+                <button id="btn-add-front-student" class="btn-secondary btn-xs"><i data-lucide="plus"></i> 추가</button>
+              </div>
+              <div id="front-students-list" class="badge-container">
+                <!-- Badges will be generated dynamically -->
+              </div>
+            </div>
+
+            <!-- Constraint: Forbidden Partners -->
+            <div class="constraint-section">
+              <div class="constraint-header">
+                <span>🚫 금지 짝꿍 (이웃 배치 방지)</span>
+                <button id="btn-add-ban-pair" class="btn-secondary btn-xs"><i data-lucide="plus"></i> 추가</button>
+              </div>
+              <div id="ban-pairs-list" class="badge-container">
+                <!-- Badges will be generated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Grid Layout & Draw Modes -->
+          <div class="card setup-card flex-col">
+            <h2 class="card-title"><i data-lucide="layout"></i> 2. 교실 구조 및 뽑기 모드</h2>
+            
+            <!-- Grid Size Input -->
+            <div class="grid-size-controls">
+              <div class="form-group spinner-group">
+                <label for="grid-rows">행 (Rows)</label>
+                <div class="spinner-input">
+                  <button id="btn-row-minus" class="btn-spinner">-</button>
+                  <input type="number" id="grid-rows" min="2" max="10" value="5" readonly>
+                  <button id="btn-row-plus" class="btn-spinner">+</button>
+                </div>
+              </div>
+              
+              <div class="form-group spinner-group">
+                <label for="grid-cols">열 (Cols)</label>
+                <div class="spinner-input">
+                  <button id="btn-col-minus" class="btn-spinner">-</button>
+                  <input type="number" id="grid-cols" min="2" max="10" value="6" readonly>
+                  <button id="btn-col-plus" class="btn-spinner">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid Interactive Editor -->
+            <div class="form-group editor-group">
+              <label>교실 구조 배치 (자리를 클릭하여 변경)</label>
+              <div class="podium-area-label">교탁 / 칠판 위치</div>
+              <div id="grid-editor-container" class="interactive-grid-editor">
+                <!-- Grid items generated dynamically -->
+              </div>
+              <div class="grid-legend">
+                <span><span class="legend-box active"></span> 사용 좌석</span>
+                <span><span class="legend-box inactive"></span> 통로/빈자리</span>
+              </div>
+            </div>
+
+            <hr class="card-divider">
+
+            <!-- Drawing Modes -->
+            <div class="form-group flex-grow">
+              <label>3. 애니메이션 뽑기 모드 선택</label>
+              <div class="modes-grid">
+                
+                <div class="mode-card active" data-mode="roulette">
+                  <div class="mode-icon roulette-icon">🎰</div>
+                  <div class="mode-info">
+                    <h4>룰렛 돌리기</h4>
+                    <p>좌석별 룰렛 당첨 연출</p>
+                  </div>
+                </div>
+
+                <div class="mode-card" data-mode="box">
+                  <div class="mode-icon box-icon">📦</div>
+                  <div class="mode-info">
+                    <h4>시크릿 상자</h4>
+                    <p>직접 클릭해 상자 개봉</p>
+                  </div>
+                </div>
+
+                <div class="mode-card" data-mode="instant">
+                  <div class="mode-icon instant-icon">⚡</div>
+                  <div class="mode-info">
+                    <h4>초고속 일괄</h4>
+                    <p>1초 만에 화려한 전체 배치</p>
+                  </div>
+                </div>
+
+                <div class="mode-card" data-mode="bomb">
+                  <div class="mode-icon bomb-icon">💣</div>
+                  <div class="mode-info">
+                    <h4>폭탄 돌리기</h4>
+                    <p>폭탄이 터지며 무작위 배치</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button id="btn-start-draw" class="btn-primary btn-lg btn-glow">
+              자리 배치 시작 🚀
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 2. PLAY VIEW -->
+      <section id="view-play" class="view-panel no-print">
+        <div class="play-header">
+          <button id="btn-stop-draw" class="btn-danger"><i data-lucide="square"></i> 중단하기</button>
+          <div id="play-status-message" class="play-status">자리를 배치하는 중...</div>
+          <button id="btn-skip-draw" class="btn-secondary"><i data-lucide="skip-forward"></i> 즉시 완료</button>
+        </div>
+
+        <!-- Drawing Animation Overlay Areas -->
+        <div id="drawing-arena">
+          <!-- Live Interactive Grid -->
+          <div id="play-grid-container" class="classroom-grid">
+            <!-- Dynamically generated seats for animation -->
+          </div>
+
+          <!-- Overlay UI for specific modes -->
+          <!-- 1) Roulette Panel -->
+          <div id="overlay-roulette" class="draw-overlay hidden">
+            <div class="roulette-ticker-container">
+              <div class="roulette-marker">▼</div>
+              <div id="roulette-strip" class="roulette-strip">
+                <!-- Name cards will scroll here -->
+              </div>
+            </div>
+            <div id="roulette-seat-target" class="roulette-target-info">배치 중인 자리: (1, 1)</div>
+          </div>
+
+          <!-- 2) Bomb Panel -->
+          <div id="overlay-bomb" class="draw-overlay hidden">
+            <div class="bomb-visual-container">
+              <div id="bomb-emoji" class="bomb-emoji">💣</div>
+              <div id="bomb-spark" class="bomb-spark">🔥</div>
+            </div>
+            <div id="bomb-name-display" class="bomb-ticker-name">학생명</div>
+            <div id="bomb-seat-target" class="roulette-target-info">타겟 자리: (1, 1)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. RESULT VIEW -->
+      <section id="view-result" class="view-panel">
+        <div class="result-header no-print">
+          <h2>🎉 자리 배치 완료!</h2>
+          <p>모든 학생들의 자리가 창의적으로 매칭되었습니다.</p>
+        </div>
+
+        <!-- Capture Container -->
+        <div id="capture-area" class="result-capture-box">
+          <h2 class="print-only-title">우리 반 자리 배치도</h2>
+          <div class="podium-area-label print-podium">교탁 / 칠판</div>
+          <div id="result-grid-container" class="classroom-grid">
+            <!-- Finalized layout -->
+          </div>
+          <div class="print-footer print-only">
+            출력일: <span id="print-date">2026년 6월 20일</span>
+          </div>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="result-actions no-print">
+          <button id="btn-restart" class="btn-secondary btn-lg"><i data-lucide="rotate-ccw"></i> 처음으로</button>
+          <button id="btn-reshuffle" class="btn-primary btn-lg"><i data-lucide="refresh-cw"></i> 다시 배치</button>
+          <button id="btn-download-img" class="btn-success btn-lg"><i data-lucide="download"></i> 이미지 저장 (PNG)</button>
+          <button id="btn-print" class="btn-info btn-lg"><i data-lucide="printer"></i> 인쇄하기 (A4)</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- MODAL DIALOGS -->
+    <!-- 1) Add Front Student Modal -->
+    <div id="modal-front" class="modal no-print">
+      <div class="modal-content">
+        <h3 class="modal-title">👁️ 앞자리 고정 학생 지정</h3>
+        <p class="modal-desc">앞자리에 우선 배정할 학생들을 선택해 주세요.</p>
+        <div id="modal-front-checkboxes" class="modal-grid-list">
+          <!-- Checkbox list of students -->
+        </div>
+        <div class="modal-actions">
+          <button id="btn-modal-front-cancel" class="btn-secondary">취소</button>
+          <button id="btn-modal-front-save" class="btn-primary">적용하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2) Add Ban Pair Modal -->
+    <div id="modal-ban" class="modal no-print">
+      <div class="modal-content">
+        <h3 class="modal-title">🚫 금지 짝꿍 커플 추가</h3>
+        <p class="modal-desc">가로 또는 세로로 절대 인접하여 앉지 않게 할 두 학생을 선택해 주세요.</p>
+        <div class="ban-pair-selects">
+          <div class="form-group">
+            <label for="select-ban-student1">학생 A</label>
+            <select id="select-ban-student1">
+              <option value="">선택...</option>
+            </select>
+          </div>
+          <div class="swap-arrow">↔</div>
+          <div class="form-group">
+            <label for="select-ban-student2">학생 B</label>
+            <select id="select-ban-student2">
+              <option value="">선택...</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-modal-ban-cancel" class="btn-secondary">취소</button>
+          <button id="btn-modal-ban-add" class="btn-primary">커플 등록</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CDN scripts -->
+  <!-- 1. Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- 2. html2canvas -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  
+  <!-- JavaScript Code -->
+  <script src="app.js"></script>
+</body>
+</html>

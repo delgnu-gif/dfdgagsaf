@@ -1,0 +1,1203 @@
+/* ==========================================================================
+   CSS Design Tokens & Core Variables
+   ========================================================================== */
+:root {
+  /* Fonts */
+  --font-display: 'Outfit', 'Noto Sans KR', sans-serif;
+  --font-body: 'Noto Sans KR', sans-serif;
+
+  /* Common Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 1. Dark Neon Theme (Default) */
+body.dark-theme {
+  --bg-primary: #0a0b10;
+  --bg-secondary: #11131e;
+  --bg-card: rgba(22, 25, 41, 0.7);
+  --bg-input: #1b1e32;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(139, 92, 246, 0.5);
+  
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+
+  /* Accent Colors */
+  --color-purple: #8b5cf6;
+  --color-purple-glow: rgba(139, 92, 246, 0.4);
+  --color-cyan: #06b6d4;
+  --color-cyan-glow: rgba(6, 182, 212, 0.4);
+  --color-pink: #ec4899;
+  --color-pink-glow: rgba(236, 72, 153, 0.4);
+  --color-green: #10b981;
+  --color-red: #ef4444;
+  --color-orange: #f97316;
+  
+  /* Seat Colors */
+  --seat-active-bg: rgba(6, 182, 212, 0.15);
+  --seat-active-border: #06b6d4;
+  --seat-active-text: #e0f7fa;
+  --seat-inactive-bg: rgba(255, 255, 255, 0.03);
+  --seat-inactive-border: rgba(255, 255, 255, 0.05);
+  --seat-inactive-text: #4b5563;
+  --seat-filled-bg: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  --seat-filled-border: #a78bfa;
+  --seat-filled-text: #ffffff;
+}
+
+/* 2. Projector Theme (High-Contrast Light Theme) */
+body.projector-theme {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-input: #e2e8f0;
+  --border-color: #cbd5e1;
+  --border-active: #2563eb;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+
+  /* Accent Colors (More Saturated for Low-Contrast Projectors) */
+  --color-purple: #4f46e5;
+  --color-purple-glow: rgba(79, 70, 229, 0.2);
+  --color-cyan: #0891b2;
+  --color-cyan-glow: rgba(8, 145, 178, 0.2);
+  --color-pink: #db2777;
+  --color-pink-glow: rgba(219, 39, 119, 0.2);
+  --color-green: #059669;
+  --color-red: #dc2626;
+  --color-orange: #ea580c;
+  
+  /* Seat Colors */
+  --seat-active-bg: #f0fdfa;
+  --seat-active-border: #0891b2;
+  --seat-active-text: #0891b2;
+  --seat-inactive-bg: #f1f5f9;
+  --seat-inactive-border: #cbd5e1;
+  --seat-inactive-text: #94a3b8;
+  --seat-filled-bg: #312e81; /* High Contrast Deep Indigo */
+  --seat-filled-border: #1e1b4b;
+  --seat-filled-text: #ffffff;
+}
+
+/* ==========================================================================
+   Base Styles & Reset
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Glow Background Effects (Only in Dark Mode) */
+.bg-glow {
+  position: absolute;
+  top: -10%;
+  left: 30%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 100%);
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: -1;
+  pointer-events: none;
+}
+body.projector-theme .bg-glow {
+  display: none;
+}
+
+.app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   Header Component
+   ========================================================================== */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-emoji {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 10px var(--color-purple-glow));
+}
+
+.header-logo h1 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--color-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Button UI Components */
+.btn-icon {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+  border-color: var(--color-purple);
+  box-shadow: 0 0 12px var(--color-purple-glow);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   View Layouts
+   ========================================================================== */
+.view-panel {
+  display: none;
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+.view-panel.active {
+  display: block;
+}
+
+.grid-two-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .grid-two-cols {
+    grid-template-columns: 4fr 5fr;
+  }
+}
+
+/* Card layout styling */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color var(--transition-normal);
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+}
+
+.card-title i {
+  color: var(--color-purple);
+}
+
+.sub-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-primary);
+}
+
+.sub-title i {
+  color: var(--color-pink);
+  width: 18px;
+}
+
+.card-divider {
+  border: 0;
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 1.5rem 0;
+}
+
+/* ==========================================================================
+   Form Fields & User Inputs
+   ========================================================================== */
+.form-group {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+textarea {
+  width: 100%;
+  height: 160px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.75rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+  transition: all var(--transition-fast);
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--color-purple);
+  box-shadow: 0 0 0 3px var(--color-purple-glow);
+}
+
+.textarea-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.student-counter {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Buttons System */
+button {
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.btn-primary {
+  background-color: var(--color-purple);
+  color: #ffffff;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #7c3aed;
+  transform: translateY(-2px);
+}
+
+.btn-primary.btn-glow {
+  box-shadow: 0 0 15px var(--color-purple-glow);
+}
+.btn-primary.btn-glow:hover {
+  box-shadow: 0 0 25px var(--color-purple);
+}
+
+.btn-secondary {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+  border-color: var(--text-secondary);
+  background-color: var(--bg-card);
+}
+
+.btn-danger {
+  background-color: var(--color-red);
+  color: #ffffff;
+  border: none;
+}
+.btn-danger:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.btn-success {
+  background-color: var(--color-green);
+  color: #ffffff;
+  border: none;
+}
+.btn-success:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+}
+
+.btn-info {
+  background-color: var(--color-cyan);
+  color: #ffffff;
+  border: none;
+}
+.btn-info:hover {
+  background-color: #0891b2;
+  transform: translateY(-2px);
+}
+
+/* Button Sizing */
+.btn-lg {
+  padding: 0.85rem 1.5rem;
+  font-size: 1.05rem;
+  border-radius: 14px;
+}
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: 8px;
+}
+.btn-xs {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 6px;
+}
+
+/* Spinner Number Controls */
+.grid-size-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.spinner-group {
+  margin-bottom: 0;
+}
+
+.spinner-input {
+  display: flex;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--bg-input);
+  align-items: center;
+}
+
+.btn-spinner {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  width: 44px;
+  height: 40px;
+  font-size: 1.2rem;
+  border-radius: 0;
+}
+.btn-spinner:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.spinner-input input {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  text-align: center;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 700;
+  outline: none;
+  -moz-appearance: textfield;
+}
+.spinner-input input::-webkit-outer-spin-button,
+.spinner-input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Constraint Management Badges
+   ========================================================================== */
+.constraint-section {
+  margin-bottom: 0.85rem;
+  background-color: rgba(255, 255, 255, 0.015);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.75rem;
+}
+
+.constraint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-height: 24px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.badge.badge-front {
+  border-color: var(--color-cyan);
+  background-color: rgba(6, 182, 212, 0.15);
+}
+
+.badge.badge-ban {
+  border-color: var(--color-pink);
+  background-color: rgba(236, 72, 153, 0.15);
+}
+
+.badge-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+  display: inline-flex;
+}
+.badge-remove:hover {
+  color: var(--color-red);
+}
+
+/* ==========================================================================
+   Interactive Grid Editor
+   ========================================================================== */
+.editor-group {
+  margin-bottom: 1.5rem;
+}
+
+.podium-area-label {
+  text-align: center;
+  background-color: var(--bg-input);
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.interactive-grid-editor {
+  display: grid;
+  gap: 6px;
+  background-color: var(--bg-input);
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  aspect-ratio: 4 / 3;
+  max-height: 260px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.editor-cell {
+  background-color: var(--seat-active-bg);
+  border: 2px solid var(--seat-active-border);
+  color: var(--seat-active-text);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  user-select: none;
+  transition: all var(--transition-fast);
+}
+
+.editor-cell:hover {
+  transform: scale(1.05);
+}
+
+.editor-cell.cell-inactive {
+  background-color: var(--seat-inactive-bg);
+  border-color: var(--seat-inactive-border);
+  color: var(--seat-inactive-text);
+}
+
+.grid-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.legend-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.legend-box.active {
+  background-color: var(--seat-active-bg);
+  border: 1px solid var(--seat-active-border);
+}
+.legend-box.inactive {
+  background-color: var(--seat-inactive-bg);
+  border: 1px solid var(--seat-inactive-border);
+}
+
+/* ==========================================================================
+   Drawing Mode Selection Cards
+   ========================================================================== */
+.modes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.mode-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mode-card:hover {
+  border-color: var(--text-secondary);
+  transform: translateY(-2px);
+}
+
+.mode-card.active {
+  border-color: var(--color-purple);
+  background-color: rgba(139, 92, 246, 0.08);
+  box-shadow: 0 0 10px var(--color-purple-glow);
+}
+
+.mode-icon {
+  font-size: 1.5rem;
+  padding: 0.4rem;
+  background-color: var(--bg-card);
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.mode-info h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.mode-info p {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Play / Animation View Layout
+   ========================================================================== */
+#view-play {
+  flex-direction: column;
+  min-height: calc(100vh - 120px);
+}
+
+.play-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.play-status {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 2rem;
+  border-radius: 100px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#drawing-arena {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 1.5rem;
+  min-height: 480px;
+}
+
+/* Classroom Seats Grid (For play and result views) */
+.classroom-grid {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.seat-node {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  user-select: none;
+  aspect-ratio: 1.2;
+  position: relative;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.seat-node.seat-inactive {
+  background-color: transparent;
+  border: 1px dashed var(--border-color);
+  box-shadow: none;
+  opacity: 0.2;
+}
+
+.seat-node .seat-index {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.seat-node .student-name {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-align: center;
+  line-height: 1.2;
+  padding: 0 6px;
+}
+
+/* Drawing animations and statuses */
+.seat-node.seat-animating {
+  animation: pulse-glow 1s infinite alternate;
+}
+
+.seat-node.seat-drawn {
+  background: var(--seat-filled-bg);
+  border-color: var(--seat-filled-border);
+  color: var(--seat-filled-text);
+  box-shadow: 0 4px 15px var(--color-purple-glow);
+  animation: seat-pop var(--transition-bounce);
+}
+
+.seat-node.seat-drawn .student-name {
+  color: var(--seat-filled-text);
+}
+
+.seat-node.seat-drawn .seat-index {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Specific Mode: Secret Box styling */
+.seat-node.seat-box {
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+  border-color: var(--color-purple);
+  box-shadow: inset 0 0 10px var(--color-purple-glow);
+  transition: transform var(--transition-fast);
+}
+
+.seat-node.seat-box:hover {
+  transform: scale(1.05);
+}
+
+.seat-node.seat-box .box-symbol {
+  font-size: 2.2rem;
+  animation: float 2s infinite ease-in-out alternate;
+}
+
+.seat-node.seat-box.box-shaking {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* ==========================================================================
+   Overlay UI Panels for modes
+   ========================================================================== */
+.draw-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 11, 16, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  border-radius: 23px;
+  animation: fadeIn var(--transition-fast) forwards;
+}
+
+body.projector-theme .draw-overlay {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.draw-overlay.hidden {
+  display: none !important;
+}
+
+/* Roulette Overlay Slider */
+.roulette-ticker-container {
+  position: relative;
+  width: 320px;
+  height: 80px;
+  background-color: var(--bg-card);
+  border: 3px solid var(--color-purple);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 25px var(--color-purple-glow);
+}
+
+.roulette-marker {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-pink);
+  z-index: 10;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.roulette-strip {
+  display: flex;
+  height: 100%;
+  width: max-content;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  will-change: transform;
+}
+
+.roulette-name-card {
+  width: 120px;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  padding: 0 10px;
+  border-right: 1px dashed var(--border-color);
+}
+
+.roulette-target-info {
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-cyan);
+  text-shadow: 0 0 8px var(--color-cyan-glow);
+}
+
+/* Bomb Overlay Visuals */
+.bomb-visual-container {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin-bottom: 1rem;
+}
+
+.bomb-emoji {
+  font-size: 6rem;
+  text-align: center;
+  line-height: 140px;
+}
+
+.bomb-spark {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 2.2rem;
+  animation: spark-burn 0.3s infinite alternate;
+}
+
+.bomb-ticker-name {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+  background-color: var(--color-red);
+  padding: 0.5rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px var(--color-pink-glow);
+  text-align: center;
+  min-width: 220px;
+}
+
+body.projector-theme .bomb-ticker-name {
+  color: #ffffff;
+  background-color: #dc2626;
+}
+
+/* ==========================================================================
+   Result View
+   ========================================================================== */
+.result-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.result-header h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+}
+
+.result-capture-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.print-only-title,
+.print-footer {
+  display: none;
+}
+
+/* ==========================================================================
+   Modal Dialog Layouts
+   ========================================================================== */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 440px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.modal-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+.modal-grid-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-input);
+  margin-bottom: 1.25rem;
+}
+
+/* Custom Checkbox Items */
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--bg-card);
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  justify-content: center;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.check-item input {
+  display: none;
+}
+
+.check-item:has(input:checked) {
+  background-color: var(--seat-active-bg);
+  border-color: var(--seat-active-border);
+  color: var(--seat-active-text);
+}
+
+.ban-pair-selects {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.ban-pair-selects .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+select {
+  width: 100%;
+  padding: 0.6rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  outline: none;
+}
+
+select:focus {
+  border-color: var(--color-purple);
+}
+
+.swap-arrow {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  margin-top: 1.25rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* ==========================================================================
+   Animations Definition
+   ========================================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-glow {
+  from {
+    border-color: var(--border-color);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.05);
+  }
+  to {
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 15px var(--color-cyan-glow);
+  }
+}
+
+@keyframes seat-pop {
+  0% { transform: scale(0.85); opacity: 0.5; }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes float {
+  from { transform: translateY(0px) rotate(0deg); }
+  to { transform: translateY(-4px) rotate(5deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px) rotate(-3deg); }
+  75% { transform: translateX(6px) rotate(3deg); }
+}
+
+@keyframes spark-burn {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.2) translate(-2px, 2px); filter: drop-shadow(0 0 6px var(--color-pink)); }
+}
+
+/* ==========================================================================
+   Print Optimizer CSS Style
+   ========================================================================== */
+@media print {
+  /* Hide all unnecessary controls */
+  .no-print, 
+  .main-header, 
+  .result-actions,
+  .modal,
+  .bg-glow {
+    display: none !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+
+  .app-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+  }
+
+  .result-capture-box {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-only-title {
+    display: block !important;
+    text-align: center;
+    font-size: 24pt;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: #000000 !important;
+  }
+
+  .print-podium {
+    display: block !important;
+    background-color: #e2e8f0 !important;
+    border: 2px solid #000000 !important;
+    color: #000000 !important;
+    font-size: 14pt !important;
+    margin-bottom: 1.5rem !important;
+    font-weight: 700;
+  }
+
+  .classroom-grid {
+    grid-gap: 8px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    aspect-ratio: auto !important;
+  }
+
+  .seat-node {
+    border: 2px solid #000000 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+    aspect-ratio: 1.4 !important;
+  }
+
+  .seat-node.seat-inactive {
+    opacity: 0.15 !important;
+    border: 1px dashed #000000 !important;
+  }
+
+  .seat-node .seat-index {
+    color: #4b5563 !important;
+    font-size: 8pt !important;
+  }
+
+  .seat-node .student-name {
+    color: #000000 !important;
+    font-size: 16pt !important;
+    font-weight: 800 !important;
+  }
+
+  .print-footer {
+    display: block !important;
+    text-align: right;
+    margin-top: 3rem;
+    font-size: 10pt;
+    color: #4b5563;
+  }
+}
